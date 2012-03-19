@@ -82,7 +82,7 @@ module CanCan
     end
 
     def build_resource
-      resource = resource_base.new(@params[name] || {}, :as => @options[:assignment])
+      resource = resource_base.new(resource_params || {}, :as => @options[:assignment])
       resource.send("#{parent_name}=", parent_resource) if @options[:singleton] && parent_resource
       initial_attributes.each do |attr_name, value|
         resource.send("#{attr_name}=", value)
@@ -92,7 +92,7 @@ module CanCan
 
     def initial_attributes
       current_ability.attributes_for(@params[:action].to_sym, resource_class).delete_if do |key, value|
-        @params[name] && @params[name].include?(key)
+        resource_params && resource_params.include?(key)
       end
     end
 
@@ -207,6 +207,11 @@ module CanCan
 
     def name
       @name || name_from_controller
+    end
+
+    def resource_params
+      # since Rails includes the namespace in the params sent by the form (issue #349)
+      @params[namespaced_name.to_s.underscore.gsub("/", "_")]
     end
 
     def namespaced_name
