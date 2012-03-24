@@ -27,6 +27,15 @@ class Ability
   end
 end
 
+class SuperModel::Base
+  alias_method :old_initialize, :initialize
+  
+  # mockup options for role mass assignment introduced in Rails 3.1
+  def initialize(attributes = {}, options = {})
+    old_initialize attributes
+  end
+end
+
 class Category < SuperModel::Base
   has_many :projects
 end

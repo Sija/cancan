@@ -99,7 +99,7 @@ module CanCan
     # matches_conditions_hash?(subject, conditions)
     def matches_conditions_hash?(subject, conditions = @conditions)
       if conditions.empty?
-        true
+        @conditions.empty?
       else
         if model_adapter(subject).override_conditions_hash_matching? subject, conditions
           model_adapter(subject).matches_conditions_hash? subject, conditions
